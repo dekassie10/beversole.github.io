@@ -3,13 +3,18 @@
 
 // The cubes array will be used to store all of our cube objects
 var cubes = [];
+// var raycaster;
+// var mouseXOnMouseDown = 0;
+// var mouse;
+// var targetRotation = 0;
+var pointLight;
 
 // These will be used for our THREE.js scene
 // We made them global so they could be easily accessed
 // by the animate function which runs in a loop
 var camera, scene, renderer;
 var scene3dHeight = 200;
-var scene3dWidth = 600;
+var scene3dWidth = 820;
 
 // created to keep track of our current frame
 // no real use other than for stats display
@@ -23,7 +28,7 @@ $( document ).ready(function() {
   // 4 functions
 
   // this function creates and defines all of our cubes
-  //initCubes();
+  initCubes();
 
   // this function renders our cubes array in simple html
   printCraigsList();
@@ -75,6 +80,14 @@ $( document ).ready(function() {
       cube3.color = '008000'; //Green
 
     cubes.push(cube3);
+
+   var cube4 = {};
+      cube4.x = 440;
+      cube4.rotateSpeed = 0.05;
+      cube4.size = 100;
+      cube4.color = '008000'; //Green
+
+    cubes.push(cube4);
   }
 
    // This function iterates through our cubes
@@ -159,7 +172,7 @@ $( document ).ready(function() {
      // but since we used a matiral that cast shadows we do need lights
      // the point light acts somewhat like a spot light
      // create a point light
-     var pointLight =
+     pointLight =
        new THREE.PointLight(0xFFFFFF);
        scene.add(pointLight);
 
@@ -168,13 +181,15 @@ $( document ).ready(function() {
      pointLight.position.y = 100;
      pointLight.position.z = 400;
 
+
+
      // since the other light was a spot light
      // areas that did not get directly hit by the light will
      // be in dark shadow
      // adding an ambient light will add a little bit of light to the whole scene
      // for our case this just prevents shadows from being completely black
-     var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-     scene.add( light );
+     // var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+     // scene.add( light );
 
      // add to the scene
      // this step just tells Three.js to take all of the
@@ -186,6 +201,16 @@ $( document ).ready(function() {
      $("#divThreeJsResults").append( renderer.domElement );
 
    }
+
+     function changeLight(lightSource) {
+      rotation = Math.round(cubes[3].mesh.rotation.x);
+     
+      hexColor = new THREE.Color( 0x000000 );
+      hexColor.setRGB((hexColor.r + rotation)/100, (hexColor.g + rotation)/100, (hexColor.b + rotation)/100 )
+      console.log(hexColor);
+      lightSource.color.set(hexColor);
+      return lightSource
+     }
 
    // This function runs every frame and animates the cubes
    // New positions are set and the scene is drawn/rendered again
@@ -233,7 +258,35 @@ $( document ).ready(function() {
      // this happens fast enough that the cubes appear to move
      renderer.render( scene, camera );
      $("#divThreeJsStats").html(statsHtm);
+     //rotate self into existence
+     pointLight = changeLight(pointLight);
 
    }
+   //Make function to change pointlight color value when cube3 rotates 10 times
+// function onDocumentMouseDown( event ) {
+
+//         event.preventDefault();
+
+//         targetRotationOnMouseDown = targetRotation;
+//         mouse.x = ( event.clientX / renderer.domElement.width ) * 2 - 1;
+//         mouse.y = - ( event.clientY / renderer.domElement.height ) * 2 + 1;
+
+//         raycaster.setFromCamera( mouse, camera );
+//         //objects needs to be changed out with an Array of all the arrays but then logic needs to be changed throughout.
+//         var intersects = raycaster.intersectObjects( cubes );
+//         // this.helpRaycaster.set( this.camera.position, vector.sub( this.camera.position ).normalize() );
+//         //var helpIntersects = helpRaycaster.intersectObjects( spinAble );
+//         //Change on click to set bright point light make cube glow
+//         if ( intersects.length > 0 ) {
+
+//           camera.position.x = intersects[ 0 ].cubes.position.x
+//           //console.log("X: " + intersects[ 0 ].object.position.x);
+//           //console.log("Y: " + intersects[ 0 ].object.position.y);
+//           //console.log("Z: " + intersects[ 0 ].object.position.z);
+//           //console.log("-------------------------------------");
+
+
+//         }
+//       }
 
 });
